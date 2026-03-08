@@ -36,14 +36,34 @@ A standalone AI micro-tool that surfaces the downsides, caveats, and counterpoin
 
 5. Open http://localhost:8000
 
-## Deploy on Railway
+## GitHub + Railway
 
-1. Create a new project and connect this repo
-2. Add environment variables (Settings → Variables):
-   - `PLATFORM_GROQ_API_KEY` (required)
-   - `PLATFORM_GROQ_API_KEY_2`, `PLATFORM_GROQ_API_KEY_3` (optional, for key rotation)
-   - `PLATFORM_OPENAI_API_KEY` (optional, fallback if no Groq key)
-3. Railway will detect the Procfile and run `uvicorn main:app --host 0.0.0.0 --port $PORT`
+### 1. Push to GitHub
+
+```bash
+# Create a new repo on github.com (e.g. whats-the-catch), then:
+cd C:\whats_the_catch
+git remote add origin https://github.com/YOUR_USERNAME/whats-the-catch.git
+git branch -M main
+git push -u origin main
+```
+
+### 2. Deploy on Railway
+
+1. Go to [railway.app](https://railway.app) → **New Project** → **Deploy from GitHub repo**
+2. Select your `whats-the-catch` repo
+3. Railway auto-detects the Procfile. Add environment variables:
+   - **Variables** → **New Variable** → `PLATFORM_GROQ_API_KEY` = your Groq key
+4. **Settings** → **Generate Domain** to get a public URL
+
+### 3. Env vars on Railway
+
+Add these under **Variables** (Settings → Variables):
+- `PLATFORM_GROQ_API_KEY` (required)
+- `PLATFORM_GROQ_API_KEY_2`, `PLATFORM_GROQ_API_KEY_3` (optional, for key rotation)
+- `PLATFORM_OPENAI_API_KEY` (optional, fallback if no Groq key)
+
+Railway detects the Procfile and runs `uvicorn main:app --host 0.0.0.0 --port $PORT`.
 
 ## Environment Variables
 
