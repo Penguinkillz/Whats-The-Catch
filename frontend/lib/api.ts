@@ -4,8 +4,10 @@ export interface CatchResponse {
   nuanced_take: string
 }
 
+const BASE = process.env.NEXT_PUBLIC_API_URL ?? ''
+
 export async function analyzeClaim(claim: string): Promise<CatchResponse> {
-  const res = await fetch('/api/catch/analyze', {
+  const res = await fetch(`${BASE}/api/catch/analyze`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ claim }),
