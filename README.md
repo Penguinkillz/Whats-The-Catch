@@ -10,60 +10,71 @@ A standalone AI micro-tool that surfaces the downsides, caveats, and counterpoin
 - **Plain HTML/CSS/JS frontend**: No React, no npm, no build step. Dark theme consistent with our other tools.
 - **FastAPI backend**: Same stack as Teach Me This and Quiz Generator
 
+## Stack
+
+| Layer | Tech |
+|-------|------|
+| Frontend | Next.js 15, TypeScript, Tailwind CSS, Framer Motion, Lucide |
+| Backend | Python, FastAPI, Groq (via OpenAI-compatible client) |
+| Fonts | Inter + Plus Jakarta Sans |
+
 ## Local Setup
 
-1. Clone or copy this repo to `C:\whats_the_catch`
-2. Create a virtual environment and install dependencies:
+### 1. Backend (FastAPI)
 
-   ```bash
-   cd C:\whats_the_catch
-   python -m venv .venv
-   .venv\Scripts\activate   # Windows
-   pip install -r requirements.txt
-   ```
+```bash
+cd C:\whats_the_catch
+python -m venv .venv
+.venv\Scripts\activate      # Windows
+pip install -r requirements.txt
 
-3. Copy `.env.example` to `.env` and add your API key:
+# Copy and fill in your API key
+copy .env.example .env
+# Edit .env → PLATFORM_GROQ_API_KEY=your_key_here
 
-   ```
-   PLATFORM_GROQ_API_KEY=your_groq_api_key_here
-   ```
+uvicorn main:app --reload --port 8000
+```
 
-4. Run the app:
+### 2. Frontend (Next.js)
 
-   ```bash
-   uvicorn main:app --reload --port 8000
-   ```
+```bash
+cd C:\whats_the_catch\frontend
+npm install
 
-5. Open http://localhost:8000
+# Optional: copy frontend/.env.example → frontend/.env.local
+# BACKEND_URL defaults to http://localhost:8000
 
-## GitHub + Railway
+npm run dev   # runs on http://localhost:3000
+```
+
+Open **http://localhost:3000** — the Next.js app proxies `/api/*` to the FastAPI backend on port 8000.
+
+## GitHub + Deploy
 
 ### 1. Push to GitHub
 
 ```bash
-# Create a new repo on github.com (e.g. whats-the-catch), then:
 cd C:\whats_the_catch
 git remote add origin https://github.com/YOUR_USERNAME/whats-the-catch.git
-git branch -M main
 git push -u origin main
 ```
 
-### 2. Deploy on Railway
+### 2. Deploy Backend → Railway
 
-1. Go to [railway.app](https://railway.app) → **New Project** → **Deploy from GitHub repo**
-2. Select your `whats-the-catch` repo
-3. Railway auto-detects the Procfile. Add environment variables:
-   - **Variables** → **New Variable** → `PLATFORM_GROQ_API_KEY` = your Groq key
-4. **Settings** → **Generate Domain** to get a public URL
+1. [railway.app](https://railway.app) → **New Project** → **Deploy from GitHub repo**
+2. Select your repo, set **Root Directory** to `/` (repo root uses the Procfile)
+3. Add variables:
+   - `PLATFORM_GROQ_API_KEY` (required)
+   - `PLATFORM_GROQ_API_KEY_2`, `PLATFORM_GROQ_API_KEY_3` (optional)
+4. **Settings → Networking → Generate Domain** — copy the URL (e.g. `https://whats-the-catch.up.railway.app`)
 
-### 3. Env vars on Railway
+### 3. Deploy Frontend → Vercel
 
-Add these under **Variables** (Settings → Variables):
-- `PLATFORM_GROQ_API_KEY` (required)
-- `PLATFORM_GROQ_API_KEY_2`, `PLATFORM_GROQ_API_KEY_3` (optional, for key rotation)
-- `PLATFORM_OPENAI_API_KEY` (optional, fallback if no Groq key)
-
-Railway detects the Procfile and runs `uvicorn main:app --host 0.0.0.0 --port $PORT`.
+1. [vercel.com](https://vercel.com) → **New Project** → import same GitHub repo
+2. Set **Root Directory** to `frontend`
+3. Add environment variable:
+   - `BACKEND_URL` = your Railway backend URL (e.g. `https://whats-the-catch.up.railway.app`)
+4. Deploy — Vercel auto-detects Next.js
 
 ## Environment Variables
 
