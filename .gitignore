@@ -10,7 +10,7 @@ __pycache__/
 frontend/.next/
 frontend/node_modules/
 frontend/.env.local
-frontend/out/
+# frontend/out/ is intentionally committed so Railway can serve it without a Node.js build step
 
 # Editors & OS
 .idea/
